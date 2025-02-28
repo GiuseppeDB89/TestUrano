@@ -10,7 +10,7 @@ public class LoginPage {
 
     private static final By EMAIL_BOX = By.name("loginfmt");
     private static final By PASSWORD_FIELD = By.name("passwd");
-    private static final By AVANTI_BUTTON = By.className("win-button");
+    private static final By AVANTI_BUTTON = By.className("button-item");
 
     public LoginPage(WebDriver driver) {
         this.driver = driver;

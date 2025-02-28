@@ -1,4 +1,4 @@
-package urano.POM;
+package urano.POM.dipentente;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -8,31 +8,45 @@ import urano.utilities.WebUtilities;
 
 import java.util.List;
 
-public class CalendarioDipendenti {
+public class CalendarioDipendentiPage {
     private WebDriver driver;
 
     private static final By BU_FILTER_SWITCH_BUTTON = By.className("rz-switch");
     private static final By BU_ROW = By.className("rz-group-row");
-    private static final By GRID = By.className("rz-grid-table");
+    private static final By GRID = By.className("rz-data-grid");
+    private static final By BU_ROWS = By.className("rz-group-row");
     private static final By DROPDOWN = By.className("rz-dropdown");
     private static final By DROPDOWN_OPTIONS = By.className("rz-dropdown-item");
     private static final By CLEAR_OPTION_BUTTON = By.className("rz-dropdown-clear-icon");
     private static final By MONTHS_YEARS_DROPDOWN = By.className("rz-splitbutton-menubutton");
     private static final By MONTHS_YEARS_OPTIONS = By.className("rz-menuitem");
     private static final By CERCA_BUTTON = By.className("rz-button-text");
-    private static final By DETTAGLIO_BUTTON = By.cssSelector(".rz-data-row button");
+    private static final By EMPLOYEE_CELLS = By.className("rz-frozen-cell");
+    private static final By VIEW_DETAILS_BUTTON = By.className("rz-button");
 
-    public CalendarioDipendenti(WebDriver driver) {
+    public CalendarioDipendentiPage(WebDriver driver) {
         this.driver = driver;
     }
 
-    public WebElement getGrid() {
+    public WebElement getEmployeeGrid() {
         return WebUtilities.findElement(driver, GRID);
+    }
+
+    public List<WebElement> getBuRowsType() {
+        try{
+            return WebUtilities.findElements(driver, BU_ROWS);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public List<WebElement> getBuEmployees() {
+        return WebUtilities.findElements(driver, EMPLOYEE_CELLS);
     }
 
     public void clickBuFilterSwitchButton() {
         FluentWait<WebDriver> wait = WebUtilities.createFluentWait(driver, 10);
-        wait.until(_ -> getGrid().isDisplayed());
+        wait.until(_ -> getEmployeeGrid().isDisplayed());
         WebUtilities.clickElement(driver, BU_FILTER_SWITCH_BUTTON);
     }
 
@@ -65,7 +79,6 @@ public class CalendarioDipendenti {
                 option.click();
             }
         }
-
     }
 
     public void selectYearsDropdownOption(String year) {
@@ -84,12 +97,22 @@ public class CalendarioDipendenti {
         for (WebElement button : buttons) {
             if (button.getText().contains("Cerca")) {
                 button.click();
+                return;
             }
         }
     }
 
-    public void clickDettaglioButton() {
-        List<WebElement> buttons = WebUtilities.findElements(driver, DETTAGLIO_BUTTON);
-        buttons.getFirst().click();
+    public void clickViewDetailsButtonByName(String name) {
+        List<WebElement> cells = WebUtilities.findElements(driver, EMPLOYEE_CELLS);
+        for (WebElement cell : cells) {
+            String employeeName = "";
+            if(!cell.getText().contains("Dipendente")) {
+                employeeName = cell.findElement(By.cssSelector("p")).getText();
+            }
+            if (WebUtilities.isNameEqual(employeeName, name)) {
+                cell.findElement(VIEW_DETAILS_BUTTON).click();
+                return;
+            }
+        }
     }
 }

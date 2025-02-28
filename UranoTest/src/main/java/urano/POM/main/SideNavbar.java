@@ -50,7 +50,7 @@ public class SideNavbar {
         this.driver = driver;
     }
 
-    public void getHomepage() {
+    public void clickHomepageButton() {
         WebUtilities.clickElement(driver, HOMEPAGE);
     }
 
@@ -63,11 +63,31 @@ public class SideNavbar {
         }
     }
 
+    public void clickOspitiButton() {
+        List<WebElement> buttons = WebUtilities.findElements(driver, GENERAL_BUTTON);
+        for(WebElement button : buttons) {
+            if(button.getText().contains("Ospiti")) {
+                button.click();
+            }
+        }
+    }
+
+    public void clickDipendentiButton() {
+        List<WebElement> buttons = WebUtilities.findElements(driver, GENERAL_BUTTON);
+        for(WebElement button : buttons) {
+            if(button.getText().contains("Dipendenti")) {
+                button.click();
+            }
+        }
+    }
+
     public void clickGestioneReport() {
+        clickReportButton();
         WebUtilities.clickElement(driver, GESTIONE_REPORT);
     }
 
     public void clickCalendarioDipendenti() {
+        clickReportButton();
         WebUtilities.clickElement(driver, CALENDARIO_DIPENDENTI);
     }
 
@@ -76,14 +96,17 @@ public class SideNavbar {
     }
 
     public void clickGestioneOspiti() {
+        clickOspitiButton();
         WebUtilities.clickElement(driver, GESTIONE_OSPITI);
     }
 
     public void clickCreaOspite() {
+        clickOspitiButton();
         WebUtilities.clickElement(driver, CREA_OSPITE);
     }
 
     public void clickGestioneDipendente() {
+        clickDipendentiButton();
         WebUtilities.clickElement(driver, GESTIONE_DIPENDENTE);
     }
 
@@ -92,6 +115,7 @@ public class SideNavbar {
     }
 
     public void clickAssegnaTechLead() {
+        clickDipendentiButton();
         WebUtilities.clickElement(driver, ASSEGNA_TECH_LEAD);
     }
 

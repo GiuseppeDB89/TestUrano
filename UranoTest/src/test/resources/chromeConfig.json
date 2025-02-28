@@ -1,0 +1,8 @@
+{
+  "browser": "firefox",
+  "aesysEmail": "giovanni.dipietrantonio@aesys.tech",
+  "aesysPassword": "Glhkj69777!?",
+  "firefoxProfilePath": "%USER_HOME%\\AppData\\Local\\Mozilla\\Firefox\\Profiles\\ffwz82ds.default-release",
+  "headless": false,
+  "implicitWait": 2
+}

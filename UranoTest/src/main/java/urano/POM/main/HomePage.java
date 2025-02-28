@@ -10,7 +10,7 @@ public class HomePage {
 
     private static final By TOP_NAVBAR = By.id("Z4F2-ZaiU0");
     private static final By SIDE_NAVBAR = By.id("EITgbgV2CE");
-    private static final By TITLE = By.className("rz-p-4");
+    private static final By TITLE = By.cssSelector(".rz-p-4 h1");
 
     public HomePage(WebDriver driver) {
         this.driver = driver;
