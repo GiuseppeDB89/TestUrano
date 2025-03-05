@@ -112,7 +112,7 @@ public class WebUtilities {
         wait.until(ExpectedConditions.invisibilityOf(byToWait));
     }
 
-    public static void waitForUrlAndPageLoad(WebDriver driver, String expectedUrl) {
+    public static void waitForUrl(WebDriver driver, String expectedUrl) {
         FluentWait<WebDriver> wait = createFluentWait(driver, 10);
         wait.until(ExpectedConditions.urlToBe(expectedUrl));
     }

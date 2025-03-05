@@ -35,6 +35,14 @@ public class JsonConfigReader {
         return profilePath.replace("%USER_HOME%", System.getProperty("user.home"));
     }
 
+    public static String getChromeProfileName() {
+        return config.get("chromeProfileName").asText();
+    }
+
+    public static String getFirefoxProfileName() {
+        return config.get("firefoxProfileName").asText();
+    }
+
     public static String getFirefoxProfilePath() {
         String profilePath = config.get("firefoxProfilePath").asText();
         return profilePath.replace("%USER_HOME%", System.getProperty("user.home"));

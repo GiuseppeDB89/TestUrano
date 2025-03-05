@@ -2,6 +2,8 @@ package urano.POM.manager;
 
 import org.openqa.selenium.WebDriver;
 import urano.POM.GestioneReportPage;
+import urano.POM.cliente.DettaglioClientePage;
+import urano.POM.cliente.GestioneClientePage;
 import urano.POM.dipentente.*;
 import urano.POM.main.HomePage;
 import urano.POM.main.LoginPage;
@@ -29,6 +31,8 @@ public class WebPageManager {
     private CreaDipendentePage creaDipendetePage;
     private AssegnaTechLeadPage assegnaTechLeadPage;
     private DettaglioTechLeadPage dettaglioTechLeadPage;
+    private GestioneClientePage gestioneClientePage;
+    private DettaglioClientePage dettaglioClientePage;
 
     public WebPageManager(WebDriver driver) {
         this.driver = driver;
@@ -151,6 +155,20 @@ public class WebPageManager {
             dettaglioTechLeadPage = new DettaglioTechLeadPage(driver);
         }
         return dettaglioTechLeadPage;
+    }
+
+    public GestioneClientePage getGestioneClientePage() {
+        if (gestioneClientePage == null) {
+            gestioneClientePage = new GestioneClientePage(driver);
+        }
+        return gestioneClientePage;
+    }
+
+    public DettaglioClientePage getDettaglioClientePage() {
+        if (dettaglioClientePage == null) {
+            dettaglioClientePage = new DettaglioClientePage(driver);
+        }
+        return dettaglioClientePage;
     }
 }
 

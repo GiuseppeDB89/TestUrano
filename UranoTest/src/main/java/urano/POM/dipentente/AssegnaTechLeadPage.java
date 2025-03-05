@@ -15,6 +15,7 @@ public class AssegnaTechLeadPage {
     private static final By BUTTONS = By.className("rz-button");
     private static final By TECH_LEAD_FORM = By.className("rz-dialog");
     private static final By DROPDOWN = By.className("rz-dropdown");
+    private static final By BODY = By.className("rz-body");
 
     public AssegnaTechLeadPage(WebDriver driver) {
         this.driver = driver;
@@ -26,6 +27,10 @@ public class AssegnaTechLeadPage {
 
     public WebElement getTechLeadForm() {
         return WebUtilities.findElement(driver, TECH_LEAD_FORM);
+    }
+
+    public WebElement getBodyPage() {
+        return WebUtilities.findElement(driver, BODY);
     }
 
     public void clickAggiungiTechLead() {
@@ -68,7 +73,8 @@ public class AssegnaTechLeadPage {
 
     public void selectDipendenteDaAggiungere(String nomeDipendente) {
         WebUtilities.clickElement(driver, DROPDOWN);
-        WebUtilities.typeWord(driver, nomeDipendente);
+        WebElement input = WebUtilities.findElement(driver, By.className("rz-dropdown-filter"));
+        input.sendKeys(nomeDipendente);
 
         List<WebElement> options = WebUtilities.findElements(driver, By.className("rz-dropdown-item"));
         for (WebElement option : options) {

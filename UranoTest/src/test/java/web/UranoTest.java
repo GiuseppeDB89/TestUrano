@@ -6,6 +6,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import urano.POM.GestioneReportPage;
+import urano.POM.cliente.DettaglioClientePage;
+import urano.POM.cliente.GestioneClientePage;
 import urano.POM.dipentente.*;
 import urano.POM.main.HomePage;
 import urano.POM.main.LoginPage;
@@ -46,6 +48,8 @@ public class UranoTest {
     private static CreaDipendentePage creaDipendetePage;
     private static AssegnaTechLeadPage assegnaTechLeadPage;
     private static DettaglioTechLeadPage dettaglioTechLeadPage;
+    private static GestioneClientePage gestioneClientePage;
+    private static DettaglioClientePage dettaglioClientePage;
 
     @BeforeAll
     public static void setUp() {
@@ -69,6 +73,8 @@ public class UranoTest {
         creaDipendetePage = webPageManager.getCreaDipendetePage();
         assegnaTechLeadPage = webPageManager.getAssegnaTechLeadPage();
         dettaglioTechLeadPage = webPageManager.getDettaglioTechLeadPage();
+        gestioneClientePage = webPageManager.getGestioneClientePage();
+        dettaglioClientePage = webPageManager.getDettaglioClientePage();
 
         String expectedUrl = "https://uranowebstage.azurewebsites.net/";
         /* String aesysEmail = JsonConfigReader.getAesysEmail();
@@ -873,7 +879,7 @@ public class UranoTest {
     @Test
     public void testAssegnaTechLead() {
         String expectedUrl1 = "https://uranowebstage.azurewebsites.net/dipendenti/AssegnaTechLead";
-        String expectedUrl2 = "https://uranowebstage.azurewebsites.net";
+        String expectedUrl2 = "https://uranowebstage.azurewebsites.net/";
         String nomeDipendente1 = "Ricci Giacomo";
         String nomeDipendente2 = "Valentino Wilma";
 
@@ -884,19 +890,97 @@ public class UranoTest {
         assert WebUtilities.isVisible(driver, assegnaTechLeadPage.getTechLeadForm()) : "Form inserimento Tech Lead non visualizzata.";
         assegnaTechLeadPage.selectDipendenteDaAggiungere(nomeDipendente1);
         assegnaTechLeadPage.clickSalvaButton();
-        WebUtilities.waitElementLoad(driver, assegnaTechLeadPage.getTechLeadGrid());
         assegnaTechLeadPage.clickTechLeadDetailsButton(nomeDipendente1);
         dettaglioTechLeadPage.clickEliminaTechLead();
-        WebUtilities.waitForUrlAndPageLoad(driver, expectedUrl1);
         assegnaTechLeadPage.clickAggiungiTechLead();
         assegnaTechLeadPage.selectDipendenteDaAggiungere(nomeDipendente2);
         assegnaTechLeadPage.clickSalvaButton();
-        WebUtilities.waitElementLoad(driver, assegnaTechLeadPage.getTechLeadGrid());
         assegnaTechLeadPage.clickTechLeadDetailsButton(nomeDipendente2);
         dettaglioTechLeadPage.clickEliminaTechLead();
-        WebUtilities.waitForUrlAndPageLoad(driver, expectedUrl1);
         assegnaTechLeadPage.clickGoBackButton();
         assert WebUtilities.isUrlCorrect(driver, expectedUrl2) : "Homepage non visualizzata.";
+    }
+
+    // TO FIX
+    @Test
+    public void testFiltriTabellaGestioneCliente() {
+        String expectedUrl1 = "https://uranowebstage.azurewebsites.net/clienti/gestione";
+        String cliente = "BU BLUE";
+        String codiceCliente = "BLUE";
+        String siglaCliente = "BLUE";
+
+        sideNavbar.clickGestioneCliente();
+        assert WebUtilities.isUrlCorrect(driver, expectedUrl1) : "Pagina Gestione Cliente non visualizzata.";
+        assert WebUtilities.isVisible(driver, gestioneClientePage.getClientiGrid()) : "Griglia Clienti non visualizzata.";
+        gestioneClientePage.writeCliente(cliente);
+        assert gestioneClientePage.isClienteNameFilterOk(cliente);
+        gestioneClientePage.clickClearFilter();
+        gestioneClientePage.writeCodiceCliente(codiceCliente);
+        assert gestioneClientePage.isCodiceClienteFilterOk(codiceCliente);
+        gestioneClientePage.clickClearFilter();
+        gestioneClientePage.writeSiglaCliente(siglaCliente);
+        assert gestioneClientePage.isSiglaClienteFilterOk(siglaCliente);
+        gestioneClientePage.clickClearFilter();
+    }
+
+    @Test
+    public void testModificaCliente() {
+        String expectedUrl1 = "https://uranowebstage.azurewebsites.net/clienti/gestione";
+        String expectedUrl2 = "https://uranowebstage.azurewebsites.net/clienti/dettaglio/";
+        String cliente = "BU BLUE";
+        String codiceCliente = "BLUE";
+        String siglaCliente = "BLUE3";
+        String newSalesAccount = "test SalesAccount";
+        String newSAEmail = "salesaccount@yopmail.com";
+        String newProtocollo = "testProtocollo";
+        String newTerminePagamento = "Bonifico Bancario";
+        String newTempiPagamento = "30 gg";
+        String newNote = "testNote";
+
+        sideNavbar.clickGestioneCliente();
+        assert WebUtilities.isUrlCorrect(driver, expectedUrl1) : "Pagina Gestione Cliente non visualizzata.";
+        assert WebUtilities.isVisible(driver, gestioneClientePage.getClientiGrid()) : "Griglia Clienti non visualizzata.";
+        gestioneClientePage.clickClienteDetailsButton(cliente);
+        assert Objects.requireNonNull(driver.getCurrentUrl()).contains(expectedUrl2) : "Pagina Dettaglio Cliente non visualizzata.";
+        assert dettaglioClientePage.getClienteName().equalsIgnoreCase(cliente) : "Nome Cliente non corrisponde.";
+        dettaglioClientePage.clickModifyButton();
+        assert WebUtilities.isVisible(driver, dettaglioClientePage.getForm()) : "Form di modifica Cliente non visualizzato.";
+        dettaglioClientePage.writeCliente(cliente);
+        dettaglioClientePage.writeCodiceCliente(codiceCliente);
+        dettaglioClientePage.writSiglaCliente(siglaCliente);
+        dettaglioClientePage.writeSalesAccount(newSalesAccount);
+        dettaglioClientePage.writeSAEmail(newSAEmail);
+        dettaglioClientePage.writeProtocollo(newProtocollo);
+        dettaglioClientePage.selectTempiPagamento(newTempiPagamento);
+        dettaglioClientePage.selectTerminiPagamento(newTerminePagamento);
+        dettaglioClientePage.writeNote(newNote);
+        dettaglioClientePage.clickSalvaButton();
+    }
+
+    @Test
+    public void testFiltriStoricoOrdini() {
+        String expectedUrl1 = "https://uranowebstage.azurewebsites.net/clienti/gestione";
+        String expectedUrl2 = "https://uranowebstage.azurewebsites.net/clienti/dettaglio/";
+        String cliente = "BU BLUE";
+        String codiceOrdine = "xxx";
+        String dataEmissione = "03/02/2025";
+        String dataFine = "19/02/2025";
+        String importo = "50000";
+
+        sideNavbar.clickGestioneCliente();
+        assert WebUtilities.isUrlCorrect(driver, expectedUrl1) : "Pagina Gestione Cliente non visualizzata.";
+        assert WebUtilities.isVisible(driver, gestioneClientePage.getClientiGrid()) : "Griglia Clienti non visualizzata.";
+        gestioneClientePage.clickClienteDetailsButton(cliente);
+        assert Objects.requireNonNull(driver.getCurrentUrl()).contains(expectedUrl2) : "Pagina Dettaglio Cliente non visualizzata.";
+        assert dettaglioClientePage.getClienteName().equalsIgnoreCase(cliente) : "Nome Cliente non corrisponde.";
+        dettaglioClientePage.writeCodiceOrdine(codiceOrdine);
+        assert dettaglioClientePage.getCodiceOrdine().contains(codiceOrdine) : "Codice Ordine non corrisponde.";
+        dettaglioClientePage.clickClearFilter();
+        //dettaglioClientePage.selectDataEmissione(dataEmissione);
+        //dettaglioClientePage.selectDataFine(dataFine);
+        // TO IMPROVE
+        dettaglioClientePage.writeImporto(importo);
+        assert dettaglioClientePage.getImporto().contains(importo) : "Importo non corrisponde";
     }
 
 }

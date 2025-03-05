@@ -81,6 +81,15 @@ public class SideNavbar {
         }
     }
 
+    public void clickClientiButton() {
+        List<WebElement> buttons = WebUtilities.findElements(driver, GENERAL_BUTTON);
+        for(WebElement button : buttons) {
+            if(button.getText().contains("Clienti")) {
+                button.click();
+            }
+        }
+    }
+
     public void clickGestioneReport() {
         clickReportButton();
         WebUtilities.clickElement(driver, GESTIONE_REPORT);
@@ -136,6 +145,7 @@ public class SideNavbar {
     }
 
     public void clickGestioneCliente() {
+        clickClientiButton();
         WebUtilities.clickElement(driver, GESTIONE_CLIENTE);
     }
 
