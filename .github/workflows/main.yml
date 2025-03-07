@@ -3,7 +3,7 @@ name: Selenium Tests
 on:
   push:
     branches:
-      - Giovanni's-TestBranch # Cambia se hai un altro branch
+      ["Giovanni's-TestBranch", "master"] # Cambia se hai un altro branch
 
 jobs:
   selenium-test:
