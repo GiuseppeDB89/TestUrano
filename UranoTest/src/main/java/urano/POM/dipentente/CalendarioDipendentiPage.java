@@ -46,7 +46,7 @@ public class CalendarioDipendentiPage {
 
     public void clickBuFilterSwitchButton() {
         FluentWait<WebDriver> wait = WebUtilities.createFluentWait(driver, 10);
-        wait.until(_ -> getEmployeeGrid().isDisplayed());
+        wait.until(grid -> getEmployeeGrid().isDisplayed());
         WebUtilities.clickElement(driver, BU_FILTER_SWITCH_BUTTON);
     }
 
