@@ -24,7 +24,7 @@ jobs:
           mvn clean install # Se usi Maven
 
       - name: Run Selenium Tests
-        run: cd UranoTest && mvn test # Comando per avviare i test
+        run: cd UranoTest; mvn test # Comando per avviare i test
 
       - name: Upload Test Reports
         if: always()
