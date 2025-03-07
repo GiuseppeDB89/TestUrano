@@ -1,0 +1,8 @@
+{
+  "browser": "firefox",
+  "chromeProfilePath": "%USER_HOME%\\AppData\\Local\\Google\\Chrome\\User Data\\",
+  "chromeProfileName": "NewProfile",
+  "firefoxProfilePath": "%USER_HOME%\\AppData\\Roaming\\Mozilla\\Firefox\\Profiles\\",
+  "firefoxProfileName": "ffwz82ds.default-release",
+  "headless": false
+}

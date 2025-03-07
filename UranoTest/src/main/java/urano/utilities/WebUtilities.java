@@ -8,7 +8,10 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
 
 import java.time.Duration;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -26,6 +29,18 @@ public class WebUtilities {
             FluentWait<WebDriver> wait = createFluentWait(driver, 10);
             wait.until(ExpectedConditions.visibilityOf(elementToCheck));
             return true;
+        } catch (TimeoutException e) {
+            return false;
+        } catch (StaleElementReferenceException e) {
+            return false;  // Non possiamo recuperare l'elemento se è stale
+        }
+    }
+
+    public static boolean areVisible(WebDriver driver, List<WebElement> elementsToCheck) {
+        try {
+            FluentWait<WebDriver> wait = createFluentWait(driver, 15);
+            wait.until(ExpectedConditions.visibilityOfAllElements(elementsToCheck));
+            return true;
         } catch (Exception e) {
             return false;
         }
@@ -42,19 +57,64 @@ public class WebUtilities {
         }
     }
 
+    public static boolean isUrlContain(WebDriver driver, String urlToContain) {
+        FluentWait<WebDriver> wait = createFluentWait(driver, 10);
+        try {
+            wait.until(ExpectedConditions.urlContains(urlToContain));
+            return true;
+        } catch (Exception e) {
+            System.err.println("URL non corretta: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public static By getLocatorFromElement(WebDriver driver, WebElement element) {
+        String className = element.getAttribute("class");
+        if (className != null && !className.isEmpty()) {
+            return By.className(className.split(" ")[0]); // Prende solo la prima classe
+        }
+
+        throw new IllegalArgumentException("Impossibile determinare il By da questo elemento");
+    }
+
     public static void clickElement(WebDriver driver, By elementToClick) {
-        FluentWait<WebDriver> wait = createFluentWait(driver, 7);
+        FluentWait<WebDriver> wait = createFluentWait(driver, 15);
+        wait.until(ExpectedConditions.elementToBeClickable(elementToClick)).click();
+    }
+
+    public static void clickWebElement(WebDriver driver, WebElement elementToClick) {
+        FluentWait<WebDriver> wait = createFluentWait(driver, 15);
         wait.until(ExpectedConditions.elementToBeClickable(elementToClick)).click();
     }
 
     public static WebElement findElement(WebDriver driver, By elementoToFind) {
-        FluentWait<WebDriver> wait = createFluentWait(driver, 7);
-        return wait.until(ExpectedConditions.visibilityOfElementLocated(elementoToFind));
+        FluentWait<WebDriver> wait = createFluentWait(driver, 15);
+        return wait.until(ExpectedConditions.presenceOfElementLocated(elementoToFind));
     }
 
     public static List<WebElement> findElements(WebDriver driver, By by) {
-        FluentWait<WebDriver> wait = createFluentWait(driver, 7);
+        FluentWait<WebDriver> wait = createFluentWait(driver, 15);
         return wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(by));
+    }
+
+    public static WebElement findElementOnParent(WebDriver driver, WebElement parent, By by) {
+        FluentWait<WebDriver> wait = createFluentWait(driver, 15);
+        return wait.until(ExpectedConditions.presenceOfNestedElementLocatedBy(parent, by));
+    }
+
+    public static List<WebElement> findElementsOnParent(WebDriver driver, By parent, By by) {
+        FluentWait<WebDriver> wait = createFluentWait(driver, 15);
+        return wait.until(ExpectedConditions.presenceOfNestedElementsLocatedBy(parent, by));
+    }
+
+    public static void waitElementLoad(WebDriver driver, WebElement byToWait) {
+        FluentWait<WebDriver> wait = createFluentWait(driver, 10);
+        wait.until(ExpectedConditions.invisibilityOf(byToWait));
+    }
+
+    public static void waitForUrl(WebDriver driver, String expectedUrl) {
+        FluentWait<WebDriver> wait = createFluentWait(driver, 10);
+        wait.until(ExpectedConditions.urlToBe(expectedUrl));
     }
 
     public static void typeWordLetterByLetter(WebDriver driver, String word) {
@@ -64,20 +124,29 @@ public class WebUtilities {
         }
     }
 
-    public static void scrollDown(WebDriver driver) {
+    public static void typeWord(WebDriver driver, String word) {
         Actions actions = new Actions(driver);
-        actions.sendKeys(Keys.PAGE_DOWN).perform();
+        actions.sendKeys(word).perform();
+    }
+
+    public static void clickButtonByText(WebDriver driver, By buttonBy, String buttonText) {
+        List<WebElement> buttons = WebUtilities.findElements(driver, buttonBy);
+        for(WebElement button : buttons) {
+            if(button.getText().contains(buttonText)) {
+                button.click();
+                return;
+            }
+        }
+    }
+
+    public static void scrollToElement(WebDriver driver, WebElement element) {
+        Actions actions = new Actions(driver);
+        actions.moveToElement(element).perform();
     }
 
     public static void scrollUp(WebDriver driver) {
         Actions actions = new Actions(driver);
         actions.sendKeys(Keys.PAGE_UP).perform();
-        actions.sendKeys(Keys.PAGE_UP).perform();
-    }
-
-    public static void scrollToEnd(WebDriver driver) {
-        Actions actions = new Actions(driver);
-        actions.sendKeys(Keys.END).perform();
     }
 
     public static void scrollDownContinuously(WebDriver driver) {
@@ -100,6 +169,31 @@ public class WebUtilities {
             System.err.println("Errore durante il hover sull'elemento: " + e.getMessage());
             throw e;
         }
+    }
+
+    public static boolean isNameEqual(String name1, String name2) {
+        // Divide le stringhe in liste di parole
+        List<String> parts1 = Arrays.asList(name1.trim().split("\\s+"));
+        List<String> parts2 = Arrays.asList(name2.trim().split("\\s+"));
+
+        // Converte entrambe le liste in insiemi (Set) per ignorare l'ordine
+        Set<String> set1 = new HashSet<>(parts1);
+        Set<String> set2 = new HashSet<>(parts2);
+
+        // Confronta i due insiemi
+        return set1.equals(set2);
+    }
+
+    public static boolean containsNameInAnyOrder(String fullText, String nameToCheck) {
+        String[] partsToCheck = nameToCheck.trim().split("\\s+");
+        if (partsToCheck.length != 6) {
+            return false;
+        }
+        String originalOrder = partsToCheck[0] + " " + partsToCheck[1];
+        String reversedOrder = partsToCheck[1] + " " + partsToCheck[0];
+
+        return fullText.toLowerCase().contains(originalOrder.toLowerCase()) ||
+                fullText.toLowerCase().contains(reversedOrder.toLowerCase());
     }
 
     public static String getOTPFromEmail(String email, By emailBox, By otpLocator) {

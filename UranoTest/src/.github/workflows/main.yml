@@ -1,0 +1,34 @@
+name: Selenium Tests
+
+on:
+  push:
+    branches:
+      - Giovanni's-TestBranch # Cambia se hai un altro branch
+
+jobs:
+  selenium-test:
+    runs-on: windows-latest # Ambiente Windows
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4 # Clona il progetto
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17' # Cambia se usi Java 11 o 8
+
+      - name: Install Dependencies
+        run: |
+          mvn clean install # Se usi Maven
+
+      - name: Run Selenium Tests
+        run: mvn test # Comando per avviare i test
+
+      - name: Upload Test Reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Test-Reports
+          path: target/surefire-reports/ # Cartella dei report
