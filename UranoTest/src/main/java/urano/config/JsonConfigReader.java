@@ -2,6 +2,7 @@ package urano.config;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -44,8 +45,16 @@ public class JsonConfigReader {
     }
 
     public static String getFirefoxProfilePath() {
+        // Costruisce il percorso dinamico del profilo Firefox
         String profilePath = config.get("firefoxProfilePath").asText();
-        return profilePath.replace("%USER_HOME%", System.getProperty("user.home"));
+        String fullPath = new File(System.getProperty("user.dir"), profilePath).getAbsolutePath();
+
+        File profileDir = new File(fullPath, getFirefoxProfileName());
+        if (!profileDir.exists()) {
+            System.err.println("Attenzione: Il profilo Firefox non esiste in " + profileDir.getAbsolutePath());
+        }
+
+        return profileDir.getAbsolutePath();
     }
 
     public static boolean isHeadless() {

@@ -2,6 +2,7 @@ target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+!**/src/test/resources/Profile/ffwz82ds.default-release/
 
 ### IntelliJ IDEA ###
 .idea/modules.xml

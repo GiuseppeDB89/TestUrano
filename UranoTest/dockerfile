@@ -1,0 +1,32 @@
+# Usa l'immagine con Java 22
+FROM eclipse-temurin:22-jdk
+
+# Installa Firefox e GeckoDriver
+RUN apt-get update && \
+    apt-get install -y firefox && \
+    wget https://github.com/mozilla/geckodriver/releases/download/v0.33.0/geckodriver-v0.33.0-linux64.tar.gz && \
+    tar -xvzf geckodriver-v0.33.0-linux64.tar.gz && \
+    mv geckodriver /usr/local/bin/ && \
+    chmod +x /usr/local/bin/geckodriver && \
+    rm geckodriver-v0.33.0-linux64.tar.gz
+
+# Imposta la working directory nel container
+WORKDIR /app
+
+# Copia tutto il progetto all'interno del container
+COPY . .
+
+# Crea la cartella dei profili di Firefox e copia il profilo
+RUN mkdir -p /root/.mozilla/firefox && \
+    cp -r src/test/resources/Profile/ffwz82ds.default-release /root/.mozilla/firefox/ && \
+    echo "[Profile0]\nName=default-release\nIsRelative=1\nPath=ffwz82ds.default-release" > /root/.mozilla/firefox/profiles.ini
+
+# Installa Maven
+RUN apt-get install -y maven
+
+# Compila il progetto con Maven (senza eseguire i test)
+RUN mvn clean install -DskipTests
+
+# Esegui i test Selenium
+RUN mvn test
+#CMD ["mvn", "test"]

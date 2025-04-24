@@ -7,6 +7,7 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 
+import java.io.File;
 import java.time.Duration;
 
 public class WebConfig {
@@ -46,33 +47,31 @@ public class WebConfig {
 
     public static WebDriver createFirefoxDriver() {
         WebDriverManager.firefoxdriver().setup();
-        String profilePath = JsonConfigReader.getFirefoxProfilePath();
-        String profileName = JsonConfigReader.getFirefoxProfileName();
-        String fullProfilePath = profilePath.concat(profileName);
 
-        // Configura FirefoxOptions per usare il profilo direttamente
+        String profilePath = JsonConfigReader.getFirefoxProfilePath();
+        File profileDir = new File(profilePath);
+
+        if (!profileDir.exists() || !profileDir.isDirectory()) {
+            throw new RuntimeException("Il profilo Firefox non esiste: " + profilePath);
+        }
+
+        // Configura il profilo di Firefox
         FirefoxOptions options = new FirefoxOptions();
-        options.addArguments("-profile", fullProfilePath);
-        options.addArguments(
-                "--disable-gpu",
-                "--disable-dev-shm-usage", // Previene problemi di memoria
-                "--no-sandbox",
-                "--window-size=1920,1080"
-        );
+        options.addArguments("-profile", profilePath);
+        options.addArguments("--disable-gpu", "--disable-dev-shm-usage", "--no-sandbox", "--window-size=1920,1080");
+
         if (JsonConfigReader.isHeadless()) {
             options.addArguments("--headless");
         }
 
-        // Preferenze avanzate
+        // Preferenze avanzate direttamente su FirefoxOptions
         options.addPreference("dom.webnotifications.enabled", false);
-        options.addPreference("network.stricttransportsecurity.preloadlist", false);
-        options.addPreference("security.insecure_field_warning.contextual.enabled", false);
         options.addPreference("browser.download.manager.showWhenStarting", false);
         options.addPreference("browser.helperApps.neverAsk.saveToDisk", "application/octet-stream");
 
         WebDriver driver = new FirefoxDriver(options);
         driver.manage().timeouts()
-                .implicitlyWait(Duration.ofSeconds(3)) // Ridotto a 3 secondi
+                .implicitlyWait(Duration.ofSeconds(3))
                 .pageLoadTimeout(Duration.ofSeconds(10));
 
         return driver;

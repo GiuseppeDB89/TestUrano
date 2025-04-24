@@ -2,9 +2,7 @@ package web;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import urano.POM.GestioneReportPage;
 import urano.POM.cliente.DettaglioClientePage;
 import urano.POM.cliente.GestioneClientePage;
@@ -79,10 +77,9 @@ public class UranoTest {
         String expectedUrl = "https://uranowebstage.azurewebsites.net/";
         /* String aesysEmail = JsonConfigReader.getAesysEmail();
         String aesysPassword = JsonConfigReader.getAesysPassword();
-
-        loginPage.writeEmail(aesysEmail);
         loginPage.writePassword(aesysPassword);
         loginPage.clickLoginButton();
+        loginPage.writeEmail(aesysEmail);
          */
         assert WebUtilities.isUrlCorrect(driver, expectedUrl) : "Urano Home Page non mostrata.";
     }
@@ -401,7 +398,7 @@ public class UranoTest {
         creaOspitePage.writeMotivoVisita(motivoVisita);
         creaOspitePage.clickSalvaButton();
         assert WebUtilities.isUrlContain(driver, expectedUrl2) : "Pagina Dettaglio Ospite non visualizzata.";
-        dettaglioOspitePage.clickGoBackButton();
+        //dettaglioOspitePage.clickGoBackButton();
         assert WebUtilities.isUrlCorrect(driver, expectedUrl3) : "Pagina Gestione Ospiti non visualizzata.";
     }
 
@@ -818,12 +815,12 @@ public class UranoTest {
         String indirizzo = "Via dei tester 01";
         String titoloStudio = "Diploma scuola superiore";
         String descrizione = "Sistemi informativi Aziendali";
-        String email = "emailpersonale1@yopmail.com"; // temp-mail.org email temporanea per test, cambiare all'occorrenza
+        String email = "emailpersonale@yopmail.com"; // temp-mail.org email temporanea per test, cambiare all'occorrenza
         String telefono = "0123456789";
         String jobPosition = "CFO";
         String businessUnit = "BU Azure";
         String sede = "Pescara";
-        String emailAziendale = "emailAziendale3@yopmail.com";
+        String emailAziendale = "emailAziendale@yopmail.com";
         String telefonoAziendale = "9876543210";
         File processImage = new File("src/test/resources/id-10069296.jpg");
         String documentoFilePath = processImage.toString();
@@ -837,7 +834,6 @@ public class UranoTest {
 
         sideNavbar.clickGestioneDipendente();
         assert WebUtilities.isUrlCorrect(driver, expectedUrl1) : "Pagina Gestione Dipendente non visualizzata.";
-        /*
         sideNavbar.clickCreaDipendente();
         creaDipendetePage.writeName(nome);
         creaDipendetePage.writeSurname(cognome);
@@ -855,10 +851,10 @@ public class UranoTest {
         creaDipendetePage.writeTelefono(telefono);
         creaDipendetePage.clickSalvaProcediButton();
         WebUtilities.scrollUp(driver);
-        */
         // SISTEMARE PER FAR SCEGLIERE TUTTI I RUOLI
-        List <WebElement> test = WebUtilities.findElementsOnParent(driver, By.className("rz-data-grid"), By.className("rz-primary"));
+        /*List <WebElement> test = WebUtilities.findElementsOnParent(driver, By.className("rz-data-grid"), By.className("rz-primary"));
         test.get(6).click();
+         */
         creaDipendetePage.selectJobPosition(jobPosition);
         creaDipendetePage.selectBusinessUnit(businessUnit);
         creaDipendetePage.selectSede(sede);
